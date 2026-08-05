@@ -1,0 +1,576 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Проекты — рабочий индекс</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg: #f3f5f9;
+    --surface: #ffffff;
+    --border: #e6e8ec;
+    --ink: #111827;
+    --ink-soft: #5a6072;
+    --ink-faint: #9298a8;
+    --accent: #406ee5;
+    --accent-hover: #3358c9;
+    --accent-soft: #e9edfc;
+    --accent-ring: rgba(64,110,229,.16);
+    --green: #16a34a;
+    --green-soft: #d1fae5;
+    --green-ink: #065f46;
+    --amber-soft: #fdf1de;
+    --amber-ink: #a3610a;
+    --shadow-sm: 0 1px 2px rgba(16,24,40,.04), 0 1px 1px rgba(16,24,40,.03);
+    --shadow-lift: 0 14px 28px rgba(16,24,40,.10);
+  }
+  *{ box-sizing:border-box; }
+  html,body{ margin:0; padding:0; }
+  body{
+    font-family:'Nunito',-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
+    background:var(--bg); color:var(--ink); -webkit-font-smoothing:antialiased;
+  }
+  a{ text-decoration:none; color:inherit; }
+
+  /* ===== topbar (минимальный) ===== */
+  .topbar{
+    position:sticky; top:0; z-index:50;
+    height:52px; display:flex; align-items:center; justify-content:flex-end;
+    padding:0 20px; background:#ffffff;
+    border-bottom:1px solid var(--border);
+  }
+  .icon-btn{
+    width:34px;height:34px;border-radius:10px;display:flex;align-items:center;justify-content:center;
+    color:#6b7280; cursor:pointer; position:relative; transition:background .15s,color .15s;
+  }
+  .icon-btn:hover{ background:#f3f4f6; color:#111827; }
+  .user-chip{ display:flex;align-items:center;gap:8px; padding:5px 10px 5px 5px; border-radius:999px; background:#f3f4f6; cursor:pointer; transition:background .15s; }
+  .user-chip:hover{ background:#e9ebef; }
+  .avatar{ width:28px;height:28px;border-radius:50%; background:var(--accent); color:#fff; display:flex;align-items:center;justify-content:center; font-size:11px;font-weight:700; }
+  .user-chip b{ font-size:12.5px; font-weight:700; }
+
+  /* ===== layout with icon rail ===== */
+  .shell{ display:flex; }
+  .nav-rail{
+    width:74px; flex-shrink:0; background:#fff; border-right:1px solid var(--border);
+    display:flex; flex-direction:column; align-items:center; padding:14px 0; gap:2px;
+    position:sticky; top:52px; height:calc(100vh - 52px); overflow-y:auto;
+  }
+  .nav-item{
+    display:flex;flex-direction:column;align-items:center;gap:4px;
+    padding:8px 4px; width:64px; cursor:pointer; color:var(--ink-faint);
+    border-radius:12px; transition:color .15s;
+  }
+  .nav-item .ic{ width:34px;height:34px;border-radius:10px;display:flex;align-items:center;justify-content:center; transition:background .15s; }
+  .nav-item span{ font-size:9.5px; font-weight:650; letter-spacing:.01em; }
+  .nav-item:hover .ic{ background:#f3f4f6; }
+  .nav-item.active{ color:var(--accent); }
+  .nav-item.active .ic{ background:var(--accent-soft); }
+
+  .content{ flex:1; min-width:0; }
+
+  .home{ display:flex; }
+  .sidebar{
+    width:320px; flex-shrink:0; background:#fff; border-right:1px solid var(--border);
+    padding:16px 0 0; position:sticky; top:52px; height:calc(100vh - 52px); display:flex; flex-direction:column;
+  }
+  .sidebar-head{ padding:0 16px 12px; display:flex; flex-direction:column; gap:10px; border-bottom:1px solid var(--border); }
+  .search-wrap{ position:relative; display:flex; align-items:center; }
+  .search-wrap svg{ position:absolute; left:11px; color:#9ca3af; }
+  .search-wrap input{
+    width:100%; height:36px; border:1px solid #e5e7eb; border-radius:10px; background:#f8f9fb;
+    padding:0 12px 0 34px; font-size:13px; outline:none; transition:border-color .15s, box-shadow .15s;
+    font-family:inherit;
+  }
+  .search-wrap input:focus{ border-color:var(--accent); box-shadow:0 0 0 3px var(--accent-ring); background:#fff; }
+  .toggle-row{ display:flex; align-items:center; gap:8px; cursor:pointer; user-select:none; }
+  .toggle-track{ width:32px;height:18px;border-radius:999px;background:var(--accent);position:relative;flex-shrink:0; }
+  .toggle-track::after{ content:"";position:absolute;top:3px;left:17px;width:12px;height:12px;border-radius:50%;background:#fff;transition:left .15s; }
+  .toggle-text{ font-size:12px;color:#4b5563;font-weight:500; }
+
+  .contr-list{ flex:1; overflow-y:auto; list-style:none; margin:0; padding:6px 8px 20px; }
+  .home-contr-item{
+    display:flex; align-items:center; gap:10px; padding:9px 10px; margin:2px 0;
+    border-radius:10px; cursor:pointer; transition:background .15s;
+  }
+  .home-contr-item:hover{ background:#f5f7ff; }
+  .home-contr-item.active{ background:var(--accent-soft); box-shadow:inset 0 0 0 1.5px #c7d3f8; }
+  .ci-avatar{
+    width:26px;height:26px;border-radius:8px;flex-shrink:0;color:#fff;font-size:10px;font-weight:800;
+    display:flex;align-items:center;justify-content:center;
+  }
+  .home-contr-name{ font-size:12.8px; font-weight:600; color:var(--ink); flex:1; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .home-contr-badge{ font-size:11px; font-weight:800; padding:2px 7px; border-radius:999px; background:#f3f4f6; color:#6b7280; flex-shrink:0; }
+  .home-contr-badge--active{ background:var(--accent); color:#fff; }
+
+  .main{ flex:1; min-width:0; padding:20px 26px 60px; background:#fafafa; }
+  .main-head{ display:flex; align-items:flex-start; justify-content:space-between; gap:16px; margin-bottom:14px; flex-wrap:wrap; }
+  .main-head h1{ font-size:19px; margin:0 0 3px; letter-spacing:-.01em; }
+  .main-head .meta{ font-size:12.5px; color:var(--ink-faint); }
+  .btn-primary{
+    display:inline-flex; align-items:center; gap:8px; background:var(--accent); color:#fff; border:none;
+    border-radius:999px; padding:11px 20px; font-weight:700; font-size:13.5px; cursor:pointer;
+    box-shadow:0 6px 16px rgba(64,110,229,.28); transition:transform .12s, box-shadow .12s, background .15s;
+    font-family:inherit;
+  }
+  .btn-primary:hover{ background:var(--accent-hover); transform:translateY(-1px); box-shadow:0 10px 22px rgba(64,110,229,.35); }
+
+  /* ---- карточки проектов: компактные, с ярким выделением завершённых ---- */
+  .proj-grid{
+    display:grid; grid-template-columns:repeat(auto-fill, minmax(168px, 1fr)); gap:10px;
+  }
+  .proj-card{
+    background:#fff; border:1px solid #edf0f3; border-radius:12px;
+    padding:11px 12px 10px; cursor:pointer; box-sizing:border-box;
+    box-shadow:var(--shadow-sm); transition:transform .15s ease, box-shadow .15s ease, border-color .15s ease, background .15s ease;
+    display:flex; flex-direction:column; gap:4px;
+  }
+  .proj-card:hover{ transform:translateY(-2px); box-shadow:var(--shadow-lift); border-color:var(--accent-soft); }
+  .proj-card--done{
+    background:linear-gradient(180deg,#f3fdf6,#ffffff 55%);
+    border-color:#bbf0cc;
+  }
+  .proj-card--done:hover{ border-color:#8fe3ac; box-shadow:0 14px 28px rgba(22,163,74,.14); }
+  .proj-card-head{ display:flex; align-items:center; justify-content:space-between; gap:6px; }
+  .proj-card-id{ font-size:10px; font-weight:700; color:#b0b6c2; letter-spacing:.02em; }
+  .proj-card-pct{ font-size:10.5px; font-weight:800; padding:2px 8px; border-radius:999px; background:var(--accent-soft); color:var(--accent); flex-shrink:0; white-space:nowrap; }
+  .proj-card-pct--done{ background:var(--green); color:#fff; box-shadow:0 2px 6px rgba(22,163,74,.35); }
+  .proj-card-name{ font-size:12px; font-weight:650; color:var(--ink); line-height:1.35; }
+  .proj-card--done .proj-card-name{ color:#0f5132; }
+  .proj-card-date{ font-size:10px; color:#9ca3af; font-weight:500; margin-top:1px; }
+
+  @media (max-width: 900px){
+    .sidebar{ display:none; }
+  }
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="user-chip"><span class="avatar">ПН</span><b>Пюра Николай</b></div>
+</header>
+
+<div class="shell">
+  <nav class="nav-rail">
+    <div class="nav-item" onclick="location.href='index.html'" style="cursor:pointer"><div class="ic"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="8" r="3.2"/><path d="M5 20c0-3.6 3-5.6 7-5.6s7 2 7 5.6"/></svg></div><span>CRM</span></div>
+    <div class="nav-item" onclick="location.href='index_17.html'" style="cursor:pointer"><div class="ic"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="4" y="5" width="16" height="15" rx="2"/><path d="M8 3v4M16 3v4M4 10h16"/></svg></div><span>Задачи</span></div>
+    <div class="nav-item" onclick="location.href='index_18.html'" style="cursor:pointer"><div class="ic"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg></div><span>Зарплата</span></div>
+    <div class="nav-item"><div class="ic"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="9" cy="20" r="1"/><circle cx="18" cy="20" r="1"/><path d="M2 3h2l2.4 12.4a2 2 0 002 1.6h8.6a2 2 0 002-1.6L21 6H6"/></svg></div><span>Закупки</span></div>
+    <div class="nav-item active" onclick="location.href='index_19.html'" style="cursor:pointer"><div class="ic"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="7" width="18" height="13" rx="2"/><path d="M3 7l3-4h12l3 4"/></svg></div><span>Проекты</span></div>
+    <div class="nav-item"><div class="ic"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 3v18h18"/><path d="M7 15l4-5 3 3 5-7"/></svg></div><span>Финансы</span></div>
+    <div class="nav-item"><div class="ic"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="4" width="18" height="12" rx="2"/><path d="M8 20h8M12 16v4"/></svg></div><span>ПК</span></div>
+    <div class="nav-item"><div class="ic"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 9l9-6 9 6v10a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"/></svg></div><span>Склад</span></div>
+    <div class="nav-item"><div class="ic"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 9h18M8 3v4M16 3v4"/></svg></div><span>График</span></div>
+    <div class="nav-item"><div class="ic"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 13l2-6h10l4 6v5H3z"/><circle cx="7.5" cy="18" r="1.6"/><circle cx="16.5" cy="18" r="1.6"/></svg></div><span>Выезды</span></div>
+    <div class="nav-item"><div class="ic"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 3v18h18M7 15l4-5 3 3 5-7"/></svg></div><span>Дашборд</span></div>
+  </nav>
+
+  <div class="content">
+    <div class="home">
+      <aside class="sidebar">
+        <div class="sidebar-head">
+          <div class="search-wrap">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none"><circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="2"/><path d="M21 21l-4.3-4.3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+            <input placeholder="Поиск">
+          </div>
+          <label class="toggle-row"><div class="toggle-track"></div><span class="toggle-text">Скрыть завершённые</span></label>
+        </div>
+        <ul class="contr-list" id="clientList">
+
+        <li class="home-contr-item openContragent active" data-idx="0" onclick="selectClient(0)">
+            <span class="ci-avatar" style="background:#406ee5">ОУ</span>
+            <span class="orgName home-contr-name">ООО УК &quot;АНТОРИЯ&quot;</span>
+            <span class="home-contr-badge home-contr-badge--active">7</span>
+        </li>
+        <li class="home-contr-item openContragent" data-idx="1" onclick="selectClient(1)">
+            <span class="ci-avatar" style="background:#22c1c3">ОИ</span>
+            <span class="orgName home-contr-name">ООО &quot;ИНЖТЕХ&quot;</span>
+            <span class="home-contr-badge home-contr-badge--active">1</span>
+        </li>
+        <li class="home-contr-item openContragent" data-idx="2" onclick="selectClient(2)">
+            <span class="ci-avatar" style="background:#f5a524">ЧА</span>
+            <span class="orgName home-contr-name">ЧЛ Антон</span>
+            <span class="home-contr-badge home-contr-badge--active">1</span>
+        </li>
+        <li class="home-contr-item openContragent" data-idx="3" onclick="selectClient(3)">
+            <span class="ci-avatar" style="background:#e23b6b">АА</span>
+            <span class="orgName home-contr-name">АО &quot;АВИЛОН АГ&quot;</span>
+            <span class="home-contr-badge home-contr-badge--active">10</span>
+        </li>
+        <li class="home-contr-item openContragent" data-idx="4" onclick="selectClient(4)">
+            <span class="ci-avatar" style="background:#16a34a">АТ</span>
+            <span class="orgName home-contr-name">АО ТСТ Транссервис</span>
+            <span class="home-contr-badge home-contr-badge--active">1</span>
+        </li>
+        <li class="home-contr-item openContragent" data-idx="5" onclick="selectClient(5)">
+            <span class="ci-avatar" style="background:#7c5cff">ОТ</span>
+            <span class="orgName home-contr-name">ООО «ТК ИНАГРО»</span>
+            <span class="home-contr-badge home-contr-badge--active">1</span>
+        </li>
+        <li class="home-contr-item openContragent" data-idx="6" onclick="selectClient(6)">
+            <span class="ci-avatar" style="background:#406ee5">ЧП</span>
+            <span class="orgName home-contr-name">ЧЛ Променад 2</span>
+            <span class="home-contr-badge home-contr-badge--active">1</span>
+        </li>
+        <li class="home-contr-item openContragent" data-idx="7" onclick="selectClient(7)">
+            <span class="ci-avatar" style="background:#22c1c3">ОК</span>
+            <span class="orgName home-contr-name">ООО &quot;КЛИНИНГ МАСТЕР&quot;</span>
+            <span class="home-contr-badge home-contr-badge--active">1</span>
+        </li>
+        <li class="home-contr-item openContragent" data-idx="8" onclick="selectClient(8)">
+            <span class="ci-avatar" style="background:#f5a524">ОН</span>
+            <span class="orgName home-contr-name">ООО &quot;НФ ПиЭм&quot;</span>
+            <span class="home-contr-badge home-contr-badge--active">5</span>
+        </li>
+        <li class="home-contr-item openContragent" data-idx="9" onclick="selectClient(9)">
+            <span class="ci-avatar" style="background:#e23b6b">ОЦ</span>
+            <span class="orgName home-contr-name">ООО «ЦЕППЕЛИН. СЕРВИС МЕНЕДЖМЕНТ»</span>
+            <span class="home-contr-badge home-contr-badge--active">1</span>
+        </li>
+        <li class="home-contr-item openContragent" data-idx="10" onclick="selectClient(10)">
+            <span class="ci-avatar" style="background:#16a34a">ОР</span>
+            <span class="orgName home-contr-name">ООО &quot;РЕЗИЛЮКС-ВОЛГА&quot;</span>
+            <span class="home-contr-badge home-contr-badge--active">1</span>
+        </li>
+        <li class="home-contr-item openContragent" data-idx="11" onclick="selectClient(11)">
+            <span class="ci-avatar" style="background:#7c5cff">ОС</span>
+            <span class="orgName home-contr-name">ООО &quot;СОЮЗ ЭСТЕЙТ&quot;</span>
+            <span class="home-contr-badge home-contr-badge--active">1</span>
+        </li>
+        <li class="home-contr-item openContragent" data-idx="12" onclick="selectClient(12)">
+            <span class="ci-avatar" style="background:#406ee5">ОД</span>
+            <span class="orgName home-contr-name">ООО &quot;Джинтек&quot;</span>
+            <span class="home-contr-badge home-contr-badge--active">1</span>
+        </li>
+        <li class="home-contr-item openContragent" data-idx="13" onclick="selectClient(13)">
+            <span class="ci-avatar" style="background:#22c1c3">ЧО</span>
+            <span class="orgName home-contr-name">ЧИП ООО</span>
+            <span class="home-contr-badge home-contr-badge--active">1</span>
+        </li>
+        <li class="home-contr-item openContragent" data-idx="14" onclick="selectClient(14)">
+            <span class="ci-avatar" style="background:#f5a524">ОФ</span>
+            <span class="orgName home-contr-name">ООО «ФЛЕШ СПОРТ»</span>
+            <span class="home-contr-badge home-contr-badge--active">4</span>
+        </li>
+        <li class="home-contr-item openContragent" data-idx="15" onclick="selectClient(15)">
+            <span class="ci-avatar" style="background:#e23b6b">ОИ</span>
+            <span class="orgName home-contr-name">ООО «Инвестиционная компания Градиент-МК».</span>
+            <span class="home-contr-badge home-contr-badge--active">2</span>
+        </li>
+        <li class="home-contr-item openContragent" data-idx="16" onclick="selectClient(16)">
+            <span class="ci-avatar" style="background:#16a34a">ОМ</span>
+            <span class="orgName home-contr-name">ООО &quot;Миллениум&quot;</span>
+            <span class="home-contr-badge home-contr-badge--active">2</span>
+        </li>
+        <li class="home-contr-item openContragent" data-idx="17" onclick="selectClient(17)">
+            <span class="ci-avatar" style="background:#7c5cff">ОВ</span>
+            <span class="orgName home-contr-name">ООО &quot;Вишневый Сад&quot;</span>
+            <span class="home-contr-badge home-contr-badge--active">2</span>
+        </li>
+        <li class="home-contr-item openContragent" data-idx="18" onclick="selectClient(18)">
+            <span class="ci-avatar" style="background:#406ee5">ФФ</span>
+            <span class="orgName home-contr-name">ФГУП &quot;ФЦДТ&quot;СОЮЗ&quot;</span>
+            <span class="home-contr-badge home-contr-badge--active">1</span>
+        </li>
+        <li class="home-contr-item openContragent" data-idx="19" onclick="selectClient(19)">
+            <span class="ci-avatar" style="background:#22c1c3">ОМ</span>
+            <span class="orgName home-contr-name">ООО &quot;Майндбокс&quot;</span>
+            <span class="home-contr-badge home-contr-badge--active">2</span>
+        </li>
+        <li class="home-contr-item openContragent" data-idx="20" onclick="selectClient(20)">
+            <span class="ci-avatar" style="background:#f5a524">ОН</span>
+            <span class="orgName home-contr-name">ООО &quot;Н-Эрфольг&quot;</span>
+            <span class="home-contr-badge home-contr-badge--active">1</span>
+        </li>
+        <li class="home-contr-item openContragent" data-idx="21" onclick="selectClient(21)">
+            <span class="ci-avatar" style="background:#e23b6b">В</span>
+            <span class="orgName home-contr-name">ВДМ</span>
+            <span class="home-contr-badge home-contr-badge--active">1</span>
+        </li>
+        <li class="home-contr-item openContragent" data-idx="22" onclick="selectClient(22)">
+            <span class="ci-avatar" style="background:#16a34a">ОФ</span>
+            <span class="orgName home-contr-name">ООО &quot;ФосАгро-Сервис&quot;</span>
+            <span class="home-contr-badge home-contr-badge--active">6</span>
+        </li>
+        <li class="home-contr-item openContragent" data-idx="23" onclick="selectClient(23)">
+            <span class="ci-avatar" style="background:#7c5cff">К</span>
+            <span class="orgName home-contr-name">4Ф Капитал</span>
+            <span class="home-contr-badge home-contr-badge--active">1</span>
+        </li>
+        <li class="home-contr-item openContragent" data-idx="24" onclick="selectClient(24)">
+            <span class="ci-avatar" style="background:#406ee5">ОС</span>
+            <span class="orgName home-contr-name">ОБЩЕСТВО С ОГРАНИЧЕННОЙ ОТВЕТСТВЕННОСТЬЮ &quot;ВМ-ЭЛЕКТРОМОНТАЖ&quot;</span>
+            <span class="home-contr-badge home-contr-badge--active">1</span>
+        </li>
+        <li class="home-contr-item openContragent" data-idx="25" onclick="selectClient(25)">
+            <span class="ci-avatar" style="background:#22c1c3">ОА</span>
+            <span class="orgName home-contr-name">ООО «АРТСЕЛЛЕНС»</span>
+            <span class="home-contr-badge home-contr-badge--active">1</span>
+        </li>
+        <li class="home-contr-item openContragent" data-idx="26" onclick="selectClient(26)">
+            <span class="ci-avatar" style="background:#f5a524">ПА</span>
+            <span class="orgName home-contr-name">ПАО АКБ &quot;МЕТАЛЛИНВЕСТБАНК&quot;</span>
+            <span class="home-contr-badge home-contr-badge--active">5</span>
+        </li>
+        <li class="home-contr-item openContragent" data-idx="27" onclick="selectClient(27)">
+            <span class="ci-avatar" style="background:#e23b6b">ИК</span>
+            <span class="orgName home-contr-name">ИП Карасева Юлия Аркадьевна,</span>
+            <span class="home-contr-badge home-contr-badge--active">1</span>
+        </li>
+        <li class="home-contr-item openContragent" data-idx="28" onclick="selectClient(28)">
+            <span class="ci-avatar" style="background:#16a34a">ОВ</span>
+            <span class="orgName home-contr-name">ООО «Владение5»</span>
+            <span class="home-contr-badge home-contr-badge--active">2</span>
+        </li>
+        <li class="home-contr-item openContragent" data-idx="29" onclick="selectClient(29)">
+            <span class="ci-avatar" style="background:#7c5cff">ТЦ</span>
+            <span class="orgName home-contr-name">Торговый Центр на Миклухо маклая</span>
+            <span class="home-contr-badge home-contr-badge--active">2</span>
+        </li>
+        <li class="home-contr-item openContragent" data-idx="30" onclick="selectClient(30)">
+            <span class="ci-avatar" style="background:#406ee5">ОИ</span>
+            <span class="orgName home-contr-name">ООО &quot;Интрар&quot;</span>
+            <span class="home-contr-badge home-contr-badge--active">5</span>
+        </li>
+        <li class="home-contr-item openContragent" data-idx="31" onclick="selectClient(31)">
+            <span class="ci-avatar" style="background:#22c1c3">В</span>
+            <span class="orgName home-contr-name">Волга-И</span>
+            <span class="home-contr-badge home-contr-badge--active">1</span>
+        </li>
+        <li class="home-contr-item openContragent" data-idx="32" onclick="selectClient(32)">
+            <span class="ci-avatar" style="background:#f5a524">ОГ</span>
+            <span class="orgName home-contr-name">ООО ГК «ТСМ»</span>
+            <span class="home-contr-badge home-contr-badge--active">1</span>
+        </li>
+        <li class="home-contr-item openContragent" data-idx="33" onclick="selectClient(33)">
+            <span class="ci-avatar" style="background:#e23b6b">ОС</span>
+            <span class="orgName home-contr-name">ОБЩЕСТВО С ОГРАНИЧЕННОЙ ОТВЕТСТВЕННОСТЬЮ &quot;ВЫМПЕЛСТРОЙ18&quot;</span>
+            <span class="home-contr-badge home-contr-badge--active">1</span>
+        </li>
+        <li class="home-contr-item openContragent" data-idx="34" onclick="selectClient(34)">
+            <span class="ci-avatar" style="background:#16a34a">АС</span>
+            <span class="orgName home-contr-name">АО «СМАК»</span>
+            <span class="home-contr-badge home-contr-badge--active">1</span>
+        </li>
+        <li class="home-contr-item openContragent" data-idx="35" onclick="selectClient(35)">
+            <span class="ci-avatar" style="background:#7c5cff">ОС</span>
+            <span class="orgName home-contr-name">ООО «Состра»</span>
+            <span class="home-contr-badge home-contr-badge--active">1</span>
+        </li>
+        <li class="home-contr-item openContragent" data-idx="36" onclick="selectClient(36)">
+            <span class="ci-avatar" style="background:#406ee5">ОЧ</span>
+            <span class="orgName home-contr-name">ОБЩЕОБРАЗОВАТЕЛЬНОЕ ЧАСТНОЕ УЧРЕЖДЕНИЕ &quot;ПИРОГОВСКАЯ ШКОЛА&quot;</span>
+            <span class="home-contr-badge home-contr-badge--active">1</span>
+        </li>
+        <li class="home-contr-item openContragent" data-idx="37" onclick="selectClient(37)">
+            <span class="ci-avatar" style="background:#22c1c3">АО</span>
+            <span class="orgName home-contr-name">Акционерное общество «Производственная фирма «СКБ Контур»</span>
+            <span class="home-contr-badge home-contr-badge--active">2</span>
+        </li>
+        <li class="home-contr-item openContragent" data-idx="38" onclick="selectClient(38)">
+            <span class="ci-avatar" style="background:#f5a524">УТ</span>
+            <span class="orgName home-contr-name">УК Трайбека</span>
+            <span class="home-contr-badge home-contr-badge--active">2</span>
+        </li>
+        <li class="home-contr-item openContragent" data-idx="39" onclick="selectClient(39)">
+            <span class="ci-avatar" style="background:#e23b6b">ОХ</span>
+            <span class="orgName home-contr-name">ООО ХК &quot;АКТИВ ДИНАМО&quot;</span>
+            <span class="home-contr-badge home-contr-badge--active">1</span>
+        </li>
+        <li class="home-contr-item openContragent" data-idx="40" onclick="selectClient(40)">
+            <span class="ci-avatar" style="background:#16a34a">ОП</span>
+            <span class="orgName home-contr-name">ООО «Прайм СВ»</span>
+            <span class="home-contr-badge home-contr-badge--active">1</span>
+        </li>
+        <li class="home-contr-item openContragent" data-idx="41" onclick="selectClient(41)">
+            <span class="ci-avatar" style="background:#7c5cff">ЛМ</span>
+            <span class="orgName home-contr-name">ЛЕ МОНЛИД</span>
+            <span class="home-contr-badge home-contr-badge--active">3</span>
+        </li>
+        <li class="home-contr-item openContragent" data-idx="42" onclick="selectClient(42)">
+            <span class="ci-avatar" style="background:#406ee5">ОД</span>
+            <span class="orgName home-contr-name">ООО «Девелопмент» «Д.У.»</span>
+            <span class="home-contr-badge home-contr-badge--active">1</span>
+        </li>
+        <li class="home-contr-item openContragent" data-idx="43" onclick="selectClient(43)">
+            <span class="ci-avatar" style="background:#22c1c3">ПК</span>
+            <span class="orgName home-contr-name">ПАО &quot;Калибр&quot;</span>
+            <span class="home-contr-badge home-contr-badge--active">2</span>
+        </li>
+        <li class="home-contr-item openContragent" data-idx="44" onclick="selectClient(44)">
+            <span class="ci-avatar" style="background:#f5a524">ОТ</span>
+            <span class="orgName home-contr-name">ООО  &quot;ТПК&quot;БОРОДИНО&quot;</span>
+            <span class="home-contr-badge home-contr-badge--active">1</span>
+        </li>
+        <li class="home-contr-item openContragent" data-idx="45" onclick="selectClient(45)">
+            <span class="ci-avatar" style="background:#e23b6b">ОК</span>
+            <span class="orgName home-contr-name">ООО «КВАНТРОН ЦЕНТР»</span>
+            <span class="home-contr-badge home-contr-badge--active">1</span>
+        </li>
+        <li class="home-contr-item openContragent" data-idx="46" onclick="selectClient(46)">
+            <span class="ci-avatar" style="background:#16a34a">ОП</span>
+            <span class="orgName home-contr-name">ООО &quot;ПАНЕЛАО ФМ&quot;</span>
+            <span class="home-contr-badge home-contr-badge--active">1</span>
+        </li>
+        <li class="home-contr-item openContragent" data-idx="47" onclick="selectClient(47)">
+            <span class="ci-avatar" style="background:#7c5cff">ОН</span>
+            <span class="orgName home-contr-name">ООО «НОВАТЕХ»</span>
+            <span class="home-contr-badge home-contr-badge--active">1</span>
+        </li>
+        <li class="home-contr-item openContragent" data-idx="48" onclick="selectClient(48)">
+            <span class="ci-avatar" style="background:#406ee5">ОС</span>
+            <span class="orgName home-contr-name">ООО «СитиЭндМолз»</span>
+            <span class="home-contr-badge home-contr-badge--active">1</span>
+        </li>
+        <li class="home-contr-item openContragent" data-idx="49" onclick="selectClient(49)">
+            <span class="ci-avatar" style="background:#22c1c3">ГВ</span>
+            <span class="orgName home-contr-name">109316, г.Москва, Волгоградский пр-т., д.41, к.1</span>
+            <span class="home-contr-badge home-contr-badge--active">1</span>
+        </li>
+        <li class="home-contr-item openContragent" data-idx="50" onclick="selectClient(50)">
+            <span class="ci-avatar" style="background:#f5a524">ОУ</span>
+            <span class="orgName home-contr-name">ООО УК «ЛЕШКОВО»</span>
+            <span class="home-contr-badge home-contr-badge--active">3</span>
+        </li>
+        <li class="home-contr-item openContragent" data-idx="51" onclick="selectClient(51)">
+            <span class="ci-avatar" style="background:#e23b6b">А</span>
+            <span class="orgName home-contr-name">АО “ЦНИИАГ”</span>
+            <span class="home-contr-badge home-contr-badge--active">1</span>
+        </li>
+        <li class="home-contr-item openContragent" data-idx="52" onclick="selectClient(52)">
+            <span class="ci-avatar" style="background:#16a34a">АО</span>
+            <span class="orgName home-contr-name">АО  &quot;Объединенная двигателестроительная корпорация&quot;</span>
+            <span class="home-contr-badge home-contr-badge--active">1</span>
+        </li>
+        <li class="home-contr-item openContragent" data-idx="53" onclick="selectClient(53)">
+            <span class="ci-avatar" style="background:#7c5cff">ЧЦ</span>
+            <span class="orgName home-contr-name">ЧЛ Цуканов Александр</span>
+            <span class="home-contr-badge home-contr-badge--active">1</span>
+        </li>
+        <li class="home-contr-item openContragent" data-idx="54" onclick="selectClient(54)">
+            <span class="ci-avatar" style="background:#406ee5">Р</span>
+            <span class="orgName home-contr-name">РЕЗУЛЬТАТ-МСК</span>
+            <span class="home-contr-badge home-contr-badge--active">1</span>
+        </li>
+        <li class="home-contr-item openContragent" data-idx="55" onclick="selectClient(55)">
+            <span class="ci-avatar" style="background:#22c1c3">-</span>
+            <span class="orgName home-contr-name">-</span>
+            <span class="home-contr-badge home-contr-badge--active">1</span>
+        </li>
+        <li class="home-contr-item openContragent" data-idx="56" onclick="selectClient(56)">
+            <span class="ci-avatar" style="background:#f5a524">ГМ</span>
+            <span class="orgName home-contr-name">ГБУ &quot;Моссовет&quot;</span>
+            <span class="home-contr-badge home-contr-badge--active">1</span>
+        </li>
+        <li class="home-contr-item openContragent" data-idx="57" onclick="selectClient(57)">
+            <span class="ci-avatar" style="background:#e23b6b">МЮ</span>
+            <span class="orgName home-contr-name">МКА &quot;Юридическая фирма &quot;ЮСТ&quot;</span>
+            <span class="home-contr-badge home-contr-badge--active">1</span>
+        </li>
+        <li class="home-contr-item openContragent" data-idx="58" onclick="selectClient(58)">
+            <span class="ci-avatar" style="background:#16a34a">Р</span>
+            <span class="orgName home-contr-name">Разное</span>
+            <span class="home-contr-badge home-contr-badge--active">1</span>
+        </li>
+        <li class="home-contr-item openContragent" data-idx="59" onclick="selectClient(59)">
+            <span class="ci-avatar" style="background:#7c5cff">ОС</span>
+            <span class="orgName home-contr-name">ООО СПИСАНИЕ</span>
+            <span class="home-contr-badge home-contr-badge--active">1</span>
+        </li>
+        <li class="home-contr-item openContragent" data-idx="60" onclick="selectClient(60)">
+            <span class="ci-avatar" style="background:#406ee5">КТ</span>
+            <span class="orgName home-contr-name">КЭ Тест списания</span>
+            <span class="home-contr-badge home-contr-badge--active">1</span>
+        </li>
+        </ul>
+      </aside>
+
+      <main class="main">
+        <div class="main-head">
+          <div>
+            <h1 id="clientTitle">ООО УК "АНТОРИЯ"</h1>
+            <div class="meta"><span id="clientMeta">Проекты · 7</span></div>
+          </div>
+          <button class="btn-primary">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path d="M12 5v14M5 12h14" stroke="#fff" stroke-width="2.4" stroke-linecap="round"/></svg>
+            Добавить проект
+          </button>
+        </div>
+
+        <div id="projArea"></div>
+      </main>
+    </div>
+  </div>
+</div>
+
+<script>
+const ANTORIYA_INDEX = 0;
+const clients = [{"name": "ООО УК \"АНТОРИЯ\"", "count": 7}, {"name": "ООО \"ИНЖТЕХ\"", "count": 1}, {"name": "ЧЛ Антон", "count": 1}, {"name": "АО \"АВИЛОН АГ\"", "count": 10}, {"name": "АО ТСТ Транссервис", "count": 1}, {"name": "ООО «ТК ИНАГРО»", "count": 1}, {"name": "ЧЛ Променад 2", "count": 1}, {"name": "ООО \"КЛИНИНГ МАСТЕР\"", "count": 1}, {"name": "ООО \"НФ ПиЭм\"", "count": 5}, {"name": "ООО «ЦЕППЕЛИН. СЕРВИС МЕНЕДЖМЕНТ»", "count": 1}, {"name": "ООО \"РЕЗИЛЮКС-ВОЛГА\"", "count": 1}, {"name": "ООО \"СОЮЗ ЭСТЕЙТ\"", "count": 1}, {"name": "ООО \"Джинтек\"", "count": 1}, {"name": "ЧИП ООО", "count": 1}, {"name": "ООО «ФЛЕШ СПОРТ»", "count": 4}, {"name": "ООО «Инвестиционная компания Градиент-МК».", "count": 2}, {"name": "ООО \"Миллениум\"", "count": 2}, {"name": "ООО \"Вишневый Сад\"", "count": 2}, {"name": "ФГУП \"ФЦДТ\"СОЮЗ\"", "count": 1}, {"name": "ООО \"Майндбокс\"", "count": 2}, {"name": "ООО \"Н-Эрфольг\"", "count": 1}, {"name": "ВДМ", "count": 1}, {"name": "ООО \"ФосАгро-Сервис\"", "count": 6}, {"name": "4Ф Капитал", "count": 1}, {"name": "ОБЩЕСТВО С ОГРАНИЧЕННОЙ ОТВЕТСТВЕННОСТЬЮ \"ВМ-ЭЛЕКТРОМОНТАЖ\"", "count": 1}, {"name": "ООО «АРТСЕЛЛЕНС»", "count": 1}, {"name": "ПАО АКБ \"МЕТАЛЛИНВЕСТБАНК\"", "count": 5}, {"name": "ИП Карасева Юлия Аркадьевна,", "count": 1}, {"name": "ООО «Владение5»", "count": 2}, {"name": "Торговый Центр на Миклухо маклая", "count": 2}, {"name": "ООО \"Интрар\"", "count": 5}, {"name": "Волга-И", "count": 1}, {"name": "ООО ГК «ТСМ»", "count": 1}, {"name": "ОБЩЕСТВО С ОГРАНИЧЕННОЙ ОТВЕТСТВЕННОСТЬЮ \"ВЫМПЕЛСТРОЙ18\"", "count": 1}, {"name": "АО «СМАК»", "count": 1}, {"name": "ООО «Состра»", "count": 1}, {"name": "ОБЩЕОБРАЗОВАТЕЛЬНОЕ ЧАСТНОЕ УЧРЕЖДЕНИЕ \"ПИРОГОВСКАЯ ШКОЛА\"", "count": 1}, {"name": "Акционерное общество «Производственная фирма «СКБ Контур»", "count": 2}, {"name": "УК Трайбека", "count": 2}, {"name": "ООО ХК \"АКТИВ ДИНАМО\"", "count": 1}, {"name": "ООО «Прайм СВ»", "count": 1}, {"name": "ЛЕ МОНЛИД", "count": 3}, {"name": "ООО «Девелопмент» «Д.У.»", "count": 1}, {"name": "ПАО \"Калибр\"", "count": 2}, {"name": "ООО  \"ТПК\"БОРОДИНО\"", "count": 1}, {"name": "ООО «КВАНТРОН ЦЕНТР»", "count": 1}, {"name": "ООО \"ПАНЕЛАО ФМ\"", "count": 1}, {"name": "ООО «НОВАТЕХ»", "count": 1}, {"name": "ООО «СитиЭндМолз»", "count": 1}, {"name": "109316, г.Москва, Волгоградский пр-т., д.41, к.1", "count": 1}, {"name": "ООО УК «ЛЕШКОВО»", "count": 3}, {"name": "АО “ЦНИИАГ”", "count": 1}, {"name": "АО  \"Объединенная двигателестроительная корпорация\"", "count": 1}, {"name": "ЧЛ Цуканов Александр", "count": 1}, {"name": "РЕЗУЛЬТАТ-МСК", "count": 1}, {"name": "-", "count": 1}, {"name": "ГБУ \"Моссовет\"", "count": 1}, {"name": "МКА \"Юридическая фирма \"ЮСТ\"", "count": 1}, {"name": "Разное", "count": 1}, {"name": "ООО СПИСАНИЕ", "count": 1}, {"name": "КЭ Тест списания", "count": 1}];
+
+const REAL_ANTORIYA_CARD = { id: '22178251', done: false, pct: '70%', name: '07.2026 / Замена вентилятора / Антория / г. Балашиха, Ленина 25', date: '07.07.2026', real: true };
+
+let state = { clientIndex: ANTORIYA_INDEX };
+
+function placeholderCards(count){
+    const pcts = [0,0,20,40,60,80,100,100];
+    const out = [];
+    const n = Math.max(count, 3);
+    for(let i=0;i<n;i++){
+        const pct = pcts[i % pcts.length];
+        out.push({
+            id: '22178251',
+            done: pct === 100,
+            pct: pct + '%',
+            name: '08.2026 / Тестовый проект №' + (i+1),
+            date: '0' + (1 + (i % 9)) + '.08.2026'
+        });
+    }
+    return out;
+}
+
+function cardsForClient(idx){
+    if(idx === ANTORIYA_INDEX){
+        return [REAL_ANTORIYA_CARD, ...placeholderCards(clients[idx].count - 1)];
+    }
+    return placeholderCards(clients[idx].count);
+}
+
+function esc(s){
+    const d = document.createElement('div');
+    d.innerText = s;
+    return d.innerHTML;
+}
+
+function renderGrid(cards){
+    return '<div class="proj-grid">' + cards.map(c => `
+        <div class="proj-card${c.done ? ' proj-card--done' : ''}"${c.real ? ` onclick="location.href='index_20.html'"` : ''}>
+            <div class="proj-card-head">
+                <span class="proj-card-id">#${esc(c.id)}</span>
+                <span class="proj-card-pct${c.done ? ' proj-card-pct--done' : ''}">${c.done ? '✓ ' : ''}${esc(c.pct)}</span>
+            </div>
+            <div class="proj-card-name">${esc(c.name)}</div>
+            <div class="proj-card-date">${esc(c.date)}</div>
+        </div>`).join('') + '</div>';
+}
+
+function render(){
+    const cards = cardsForClient(state.clientIndex);
+    document.getElementById('projArea').innerHTML = renderGrid(cards);
+}
+
+function selectClient(idx){
+    state.clientIndex = idx;
+    document.getElementById('clientTitle').textContent = clients[idx].name;
+    document.getElementById('clientMeta').textContent = 'Проекты · ' + cardsForClient(idx).length;
+    document.querySelectorAll('#clientList .home-contr-item').forEach(el => el.classList.remove('active'));
+    document.querySelector('#clientList .home-contr-item[data-idx="' + idx + '"]').classList.add('active');
+    render();
+}
+
+render();
+</script>
+
+</body>
+</html>

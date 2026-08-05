@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Klimek CRM — Проект</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg: #eef1f6;
+    --white: #ffffff;
+    --border: #e6e9ef;
+    --text: #1d2433;
+    --text-soft: #667085;
+    --text-faint: #98a2b3;
+    --blue: #3b5bfd;
+    --blue-soft-bg: #e8ecfe;
+    --blue-soft-text: #3b52d1;
+    --green-bg:#e6f4ea; --green-text:#1a7f37;
+    --red-bg:#fdeceb; --red-text:#d92d20;
+    --purple-bg:#f1ecfe; --purple-text:#6941c6;
+    --peach-bg:#fdf1e7; --peach-text:#b95c00;
+    --dark-bg:#1f2430; --dark-text:#ffffff;
+    --gray-bg:#eef1f4; --gray-text:#667085;
+    --radius: 14px;
+    --shadow: 0 1px 2px rgba(16,24,40,.04), 0 1px 3px rgba(16,24,40,.03);
+    font-family: 'Nunito', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;background:var(--bg);color:var(--text);}
+  body{display:flex; min-height:100vh; font-size:14px;}
+
+  /* ---------- Sidebar ---------- */
+  .sidebar{
+    width:84px; flex-shrink:0; background:var(--white); border-right:1px solid var(--border);
+    display:flex; flex-direction:column; align-items:center; padding:18px 0; gap:1px;
+    position:sticky; top:0; height:100vh;
+  }
+  .nav-item{
+    width:66px; padding:8px 4px; border-radius:12px; display:flex; flex-direction:column;
+    align-items:center; gap:5px; cursor:pointer; color:var(--text-soft); font-size:10px;
+    font-weight:600; letter-spacing:.1px; transition:.15s; text-align:center; position:relative;
+  }
+  .nav-item svg{width:19px;height:19px;}
+  .nav-item.active{ background:var(--blue-soft-bg); color:var(--blue-soft-text); }
+  .nav-item:hover:not(.active){ background:#f4f6fb; }
+  .nav-badge{ position:absolute; top:2px; right:12px; width:15px; height:15px; border-radius:50%; background:var(--red-text); color:#fff; font-size:9px; font-weight:800; display:flex; align-items:center; justify-content:center; }
+
+  /* ---------- Shell ---------- */
+  .shell{flex:1; display:flex; flex-direction:column; min-width:0;}
+  .topbar{
+    height:60px; background:var(--white); border-bottom:1px solid var(--border);
+    display:flex; align-items:center; justify-content:space-between; padding:0 28px;
+    position:sticky; top:0; z-index:20;
+  }
+  .back-btn{
+    width:34px;height:34px;border-radius:10px;background:#fff;border:1px solid var(--border);
+    display:flex;align-items:center;justify-content:center;color:var(--text-soft);cursor:pointer;
+    transition:.15s; text-decoration:none;
+  }
+  .back-btn:hover{ background:var(--blue-soft-bg); color:var(--blue-soft-text); border-color:#c9d3fb; }
+  .user-chip{ display:flex; align-items:center; gap:10px; cursor:pointer; }
+  .user-chip .avatar{
+    width:32px;height:32px;border-radius:50%;background:var(--blue);color:#fff;
+    display:flex;align-items:center;justify-content:center;font-weight:700;font-size:12px;
+  }
+  .user-chip .name{font-weight:600; font-size:13.5px;}
+  .user-chip .chev{color:var(--text-faint); font-size:11px;}
+
+  .view{ padding:20px 28px 40px 28px; }
+
+  /* ---------- Buttons ---------- */
+  .btn{
+    border:none; border-radius:10px; font-weight:700; font-size:12.5px; letter-spacing:.2px;
+    padding:11px 18px; cursor:pointer; display:inline-flex; align-items:center; gap:8px;
+    font-family:inherit;
+  }
+  .btn-primary{ background:var(--blue); color:#fff; }
+  .btn-soft-blue{ background:var(--blue-soft-bg); color:var(--blue-soft-text); }
+  .btn-outline{ background:#fff; border:1px solid var(--border); color:var(--text-soft); }
+  .btn-block{ width:100%; justify-content:center; }
+
+  /* ---------- Pills ---------- */
+  .pill{ border-radius:999px; padding:4px 10px; font-size:10.5px; font-weight:700; letter-spacing:.2px; white-space:nowrap; }
+  .pill-green{ background:var(--green-bg); color:var(--green-text); }
+
+  /* ================= PROJECT ================= */
+  .split{ display:flex; gap:20px; align-items:flex-start; }
+  .card{ background:var(--white); border:1px solid var(--border); border-radius:var(--radius); box-shadow:var(--shadow); }
+  .card-pad{ padding:18px 20px; }
+  .section-label{ font-size:11px; font-weight:800; letter-spacing:.5px; color:var(--text-faint); text-transform:uppercase; margin-bottom:10px; }
+
+  /* Editable-looking-static fields: flat/plain until focused, then reveal as an editable input */
+  .field{ margin-bottom:12px; }
+  .field label{ display:block; font-size:11px; color:var(--text-faint); font-weight:700; margin-bottom:4px; letter-spacing:.2px; }
+  .field input, .field select{
+    width:100%; padding:7px 9px; margin:-1px -9px; border:1px solid transparent; border-radius:8px;
+    font-size:13.5px; font-weight:600; color:var(--text); background:transparent;
+    font-family:inherit; transition:.12s;
+  }
+  .field input:hover, .field select:hover{ background:#f6f7fb; }
+  .field input:focus, .field select:focus{
+    outline:none; background:#fbfcfe; border-color:var(--blue);
+    box-shadow:0 0 0 3px rgba(59,91,253,.10);
+  }
+  .search-input{
+    flex:1; padding:7px 11px; margin:-1px 0; border:1px solid transparent; border-radius:9px;
+    font-size:13px; font-weight:600; background:transparent; font-family:inherit; transition:.12s;
+  }
+  .search-input::placeholder{ color:var(--text-faint); font-weight:500; }
+  .search-input:hover{ background:#f6f7fb; }
+  .search-input:focus{ outline:none; background:#fbfcfe; border-color:var(--blue); box-shadow:0 0 0 3px rgba(59,91,253,.10); }
+
+  .link-row{ display:flex; align-items:center; gap:8px; padding:8px 0; font-size:13px; color:var(--text); cursor:pointer; }
+  .link-row .ic{ color:var(--text-faint); width:16px; text-align:center; }
+  .link-row.danger{ color:var(--red-text); }
+  .divider{ height:1px; background:var(--border); margin:12px 0; }
+
+  table.clean{ width:100%; border-collapse:collapse; }
+  table.clean th{ text-align:left; font-size:10.5px; color:var(--text-faint); font-weight:800; letter-spacing:.4px; padding:0 10px 10px 10px; text-transform:uppercase; }
+  table.clean td{ padding:12px 10px; font-size:13px; border-top:1px solid var(--border); }
+  table.clean tr:first-child td{ border-top:none; }
+  .avatar-sm{ width:26px;height:26px;border-radius:50%; background:var(--peach-bg); color:var(--peach-text); display:inline-flex; align-items:center; justify-content:center; font-weight:700; font-size:10.5px; margin-right:8px; }
+  .num-blue{ color:var(--blue); font-weight:700; }
+  .progress-track{ width:70px; height:6px; border-radius:99px; background:var(--gray-bg); overflow:hidden; display:inline-block; vertical-align:middle; margin-right:6px;}
+  .progress-fill{ height:100%; background:var(--blue); }
+  .icon-btn{ width:26px;height:26px;border-radius:8px; border:1px solid var(--border); background:#fff; display:inline-flex; align-items:center; justify-content:center; color:var(--text-soft); margin-left:4px; cursor:pointer; font-size:11px;}
+</style>
+</head>
+<body>
+
+  <div class="sidebar">
+    <div class="nav-item" title="CRM" style="margin-bottom:6px; cursor:pointer" onclick="location.href='index.html'">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 3.5-7 8-7s8 3 8 7"/></svg>
+      CRM
+      <span class="nav-badge">1</span>
+    </div>
+    <div class="nav-item" title="Задачи" style="cursor:pointer" onclick="location.href='index_17.html'">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="3"/><path d="M8 12l2.5 2.5L16 9"/></svg>
+      Задачи
+    </div>
+    <div class="nav-item" title="Зарплата" style="cursor:pointer" onclick="location.href='index_18.html'">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 7l3-4h12l3 4"/><path d="M3 7h18v12a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7z"/></svg>
+      Зарплата
+    </div>
+    <div class="nav-item" title="Закупки">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="20" r="1.4"/><circle cx="18" cy="20" r="1.4"/><path d="M3 4h2l2.2 11.2a2 2 0 0 0 2 1.6h8.2a2 2 0 0 0 2-1.6L21 8H6.2"/></svg>
+      Закупки
+    </div>
+    <div class="nav-item active" title="Проекты" style="cursor:pointer" onclick="location.href='index_19.html'">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 7l3-4h5l2 3h8v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7z"/></svg>
+      Проекты
+    </div>
+    <div class="nav-item" title="Финансы">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 17l5-6 4 3 6-8"/><path d="M13 6h5v5"/></svg>
+      Финансы
+    </div>
+    <div class="nav-item" title="ПК">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="5" width="20" height="13" rx="2"/><path d="M2 9h20"/></svg>
+      ПК
+    </div>
+    <div class="nav-item" title="Склад">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 10l9-6 9 6"/><path d="M5 9v11h14V9"/></svg>
+      Склад
+    </div>
+    <div class="nav-item" title="График выездов">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 16V9a2 2 0 0 1 2-2h9l4 4h1a2 2 0 0 1 2 2v3"/><circle cx="7.5" cy="16.5" r="1.6"/><circle cx="17.5" cy="16.5" r="1.6"/></svg>
+      График выездов
+    </div>
+    <div class="nav-item" title="Выезды водителей">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 16V9a2 2 0 0 1 2-2h9l4 4h1a2 2 0 0 1 2 2v3"/><circle cx="7.5" cy="16.5" r="1.6"/><circle cx="17.5" cy="16.5" r="1.6"/></svg>
+      Выезды водителей
+    </div>
+    <div class="nav-item" title="Дашборд">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/></svg>
+      Дашборд
+    </div>
+    <div class="nav-item" title="Настройки" style="margin-top:auto;">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.6a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09A1.65 1.65 0 0 0 15 4.6a1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9c.36.14.68.32 1 .51H21a2 2 0 0 1 0 4h-.09c-.32.19-.64.37-1 .51z"/></svg>
+      Настройки
+    </div>
+  </div>
+
+  <div class="shell">
+    <div class="topbar">
+      <a class="back-btn" href="index_19.html" title="Назад к проектам">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>
+      </a>
+      <div class="user-chip">
+        <div class="avatar">ПН</div>
+        <div class="name">Пюра Николай</div>
+        <div class="chev">⌄</div>
+      </div>
+    </div>
+
+    <div class="view">
+      <div style="font-weight:800; font-size:16px; margin-bottom:16px;">07.2026 / Замена вентилятора / Антория / г. Балашиха, Ленина 25</div>
+      <div class="split">
+        <div style="width:300px; flex-shrink:0; display:flex; flex-direction:column; gap:16px;">
+          <div class="card card-pad">
+            <div class="section-label">Проект</div>
+            <div class="field"><label>Начат</label><input value="07.07.2026"></div>
+            <div class="field"><label>Готовность</label><input value="70"></div>
+            <div class="link-row" style="justify-content:space-between; padding:6px 0;"><span style="font-size:13px;">Показывать уволенных</span></div>
+            <div class="divider"></div>
+            <div class="link-row"><span class="ic">◱</span> Проект #4756</div>
+            <div class="link-row"><span class="ic">🗂</span> Сделка #22178251</div>
+            <div class="link-row"><span class="ic">✓</span> Telegram группа</div>
+            <div class="link-row"><span class="ic">▤</span> Google Drive</div>
+            <div class="link-row"><span class="ic">⧉</span> Скопировать</div>
+            <div class="link-row danger"><span class="ic">🗑</span> Удалить</div>
+          </div>
+          <div class="card card-pad">
+            <div class="section-label">Выручка</div>
+            <div class="field" style="margin-bottom:10px;"><input value="74 969"></div>
+            <div class="section-label">Выручка (услуги)</div>
+            <div class="field" style="margin-bottom:10px;"><input value="66 734"></div>
+            <div style="display:flex; gap:8px;">
+              <div class="field" style="flex:1;"><label>Выручка (подряд)</label><input value="0"></div>
+              <div class="field" style="flex:1;"><label>Выручка (сотр.)</label><input value="66 734"></div>
+            </div>
+            <div class="section-label">Расходы (товары)</div>
+            <div class="field"><input value="518.4"></div>
+          </div>
+          <div class="card card-pad">
+            <div class="section-label">Зарплата</div>
+            <div class="field"><label>Ставка</label><input value="15"></div>
+            <div style="font-size:12px; color:var(--text-faint); font-weight:700; margin-bottom:4px;">ФОНД ОПЛАТЫ</div>
+            <div style="font-weight:800; font-size:15px; margin-bottom:14px;">10 010,1</div>
+            <button class="btn btn-primary btn-block">Сохранить</button>
+          </div>
+        </div>
+
+        <div style="flex:1; display:flex; flex-direction:column; gap:16px;">
+          <div class="card card-pad">
+            <table class="clean">
+              <tr><th>Сотрудник</th><th>Ставка</th><th>Выплачено</th><th>Остаток</th><th>Готовность</th><th>Дата</th><th></th></tr>
+              <tr>
+                <td><span class="avatar-sm">ПД</span>Потапов Денис</td><td>1650</td><td>1650</td><td class="num-blue">0,0</td>
+                <td><span class="progress-track"><span class="progress-fill" style="width:100%"></span></span>100</td><td>08.07.2026</td>
+                <td><span class="icon-btn">🗑</span></td>
+              </tr>
+              <tr>
+                <td><span class="avatar-sm" style="background:var(--blue-soft-bg); color:var(--blue-soft-text);">КТ</span>Кабылин Тимур</td><td>1650</td><td>1650</td><td class="num-blue">0,0</td>
+                <td><span class="progress-track"><span class="progress-fill" style="width:100%"></span></span>100</td><td>08.07.2026</td>
+                <td><span class="icon-btn">🗑</span></td>
+              </tr>
+              <tr>
+                <td><span class="avatar-sm" style="background:var(--green-bg); color:var(--green-text);">ЗС</span>Зубков Сергей</td><td>7000</td><td>7000</td><td class="num-blue">0,0</td>
+                <td><span class="progress-track"><span class="progress-fill" style="width:100%"></span></span>100</td><td>22.07.2026</td>
+                <td><span class="icon-btn">🗑</span></td>
+              </tr>
+            </table>
+            <div style="margin-top:10px;"><button class="btn btn-outline" style="font-size:12px;">— Добавить сотрудника —</button></div>
+            <div style="margin-top:14px; font-size:12.5px; color:var(--text-soft);">Осталось распределить: <b style="color:var(--text);">6 383,5</b></div>
+          </div>
+
+          <div class="card card-pad">
+            <div style="display:flex; gap:10px; margin-bottom:14px; align-items:center;">
+              <button class="btn btn-soft-blue">🚚 Назначить выезд</button>
+              <input class="search-input" placeholder="Поиск по сотруднику">
+              <button class="btn btn-outline">Найти</button>
+            </div>
+            <table class="clean">
+              <tr><th>Дата</th><th>Сотрудник</th><th>Статус</th><th></th></tr>
+              <tr><td>08.07.2026</td><td>Зубков Сергей</td><td><span class="pill pill-green">Завершена</span></td><td><span class="icon-btn">↗</span><span class="icon-btn">✎</span></td></tr>
+              <tr><td>08.07.2026</td><td>Потапов Денис</td><td><span class="pill pill-green">Завершена</span></td><td><span class="icon-btn">↗</span><span class="icon-btn">✎</span></td></tr>
+              <tr><td>20.07.2026</td><td>Зубков Сергей</td><td><span class="pill pill-green">Завершена</span></td><td><span class="icon-btn">↗</span><span class="icon-btn">✎</span></td></tr>
+              <tr><td>22.07.2026</td><td>Зубков Сергей</td><td><span class="pill pill-green">Завершена</span></td><td><span class="icon-btn">↗</span><span class="icon-btn">✎</span></td></tr>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</body>
+</html>
